@@ -57,6 +57,7 @@
 #include "./panels/lcd_ctrl.h"
 #include "../../../../dma-buf/sync_debug.h"
 #include "dpp.h"
+#include <linux/devfreq_boost.h>
 #if defined(CONFIG_EXYNOS_DISPLAYPORT)
 #include "displayport.h"
 #endif
@@ -2718,6 +2719,7 @@ static int decon_set_win_config(struct decon_device *decon,
 
 	num_of_window = decon_get_active_win_count(decon, win_data);
 	if (num_of_window) {
+	         devfreq_boost_kick(DEVFREQ_EXYNOS_MIF);
 		win_data->retire_fence = decon_create_fence(decon, &sync_file);
 		if (win_data->retire_fence < 0)
 			goto err_prepare;
@@ -2743,6 +2745,7 @@ static int decon_set_win_config(struct decon_device *decon,
 			sizeof(struct decon_rect));
 
 	if (num_of_window) {
+		devfreq_boost_kick(DEVFREQ_EXYNOS_MIF);
 		fd_install(win_data->retire_fence, sync_file->file);
 		decon_create_release_fences(decon, win_data, sync_file);
 #if !defined(CONFIG_SUPPORT_LEGACY_FENCE)
