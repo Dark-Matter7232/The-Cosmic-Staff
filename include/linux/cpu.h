@@ -178,6 +178,7 @@ void cpuhp_report_idle_dead(void);
 static inline void cpuhp_report_idle_dead(void) { }
 #endif /* #ifdef CONFIG_HOTPLUG_CPU */
 
+
 enum cpuhp_smt_control {
 	CPU_SMT_ENABLED,
 	CPU_SMT_DISABLED,
@@ -194,5 +195,10 @@ extern void cpu_smt_check_topology(void);
 static inline void cpu_smt_disable(bool force) { }
 static inline void cpu_smt_check_topology(void) { }
 #endif
+
+extern bool cpu_mitigations_off(void);
+extern bool cpu_mitigations_auto_nosmt(void);
+
+extern unsigned int logical_bootcpu_id;
 
 #endif /* _LINUX_CPU_H_ */
