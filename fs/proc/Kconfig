@@ -105,6 +105,10 @@ config PROC_DLOG
 	depends on PROC_FSLOG
 	default y
 
+config PROC_MAGISK_HIDE_MOUNT
+	bool "Hide magisk mounts for IsolatedService"
+	default n
+
 config PROC_UID
 	bool "Include /proc/uid/ files"
 	default y
