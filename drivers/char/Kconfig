@@ -564,6 +564,8 @@ config TELCLOCK
 	  fabric.  Upon loading, the driver exports a sysfs directory,
 	  /sys/devices/platform/telco_clock, with a number of files for
 	  controlling the behavior of this hardware.
+	  
+source "drivers/char/srandom/Kconfig"
 
 config DEVPORT
 	bool "/dev/port character device"
