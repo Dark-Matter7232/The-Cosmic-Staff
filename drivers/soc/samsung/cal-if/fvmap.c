@@ -320,12 +320,180 @@ static void fvmap_copy_from_sram(void __iomem *map_base, void __iomem *sram_base
 		if (margin)
 			cal_dfs_set_volt_margin(i | ACPM_VCLK_TYPE, margin);
 
-		for (j = 0; j < fvmap_header[i].num_of_lv; j++) {
-			new->table[j].rate = old->table[j].rate;
-			new->table[j].volt = old->table[j].volt;
-			pr_info("  lv : [%7d], volt = %d uV (%d %%) \n",
-				new->table[j].rate, new->table[j].volt,
-				volt_offset_percent);
+		for (j = 0; j < fvmap_header[i].num_of_lv; j++)
+		{
+			if(fvmap_header[i].num_of_lv==20&&fvmap_header[i].num_of_members==2)	   //for big cores
+			{
+			         if(old->table[j].rate==2704000)
+					new->table[j].volt = old->table[j].volt + 25000 + 25000 + 25000;
+				if(old->table[j].rate==2600000)
+					new->table[j].volt = old->table[j].volt + 25000 + 25000 + 25000;
+				if(old->table[j].rate==2496000)
+					new->table[j].volt = old->table[j].volt + 25000 + 25000 + 25000;
+				if(old->table[j].rate==2314000)
+					new->table[j].volt = old->table[j].volt + 25000 + 25000 + 12500;
+				if(old->table[j].rate==2210000)
+					new->table[j].volt = old->table[j].volt + 25000 + 12500;
+				if(old->table[j].rate==2184000)
+					new->table[j].volt = old->table[j].volt + 12500;
+				if(old->table[j].rate==2080000)
+					new->table[j].volt = old->table[j].volt - 43750;
+				if(old->table[j].rate==1976000)
+					new->table[j].volt = old->table[j].volt - 43750;
+				if(old->table[j].rate==1898000)
+					new->table[j].volt = old->table[j].volt - 50000;
+				if(old->table[j].rate==1768000)
+					new->table[j].volt = old->table[j].volt - 62500;
+				if(old->table[j].rate==1664000)
+					new->table[j].volt = old->table[j].volt - 43750;
+				if(old->table[j].rate==1508000)
+					new->table[j].volt = old->table[j].volt - 43750;
+				if(old->table[j].rate==1456000)
+					new->table[j].volt = old->table[j].volt - 43750;	
+				if(old->table[j].rate==1352000)
+					new->table[j].volt = old->table[j].volt - 43750;
+				if(old->table[j].rate==1248000)
+					new->table[j].volt = old->table[j].volt - 43750;
+				if(old->table[j].rate==1144000)
+					new->table[j].volt = old->table[j].volt - 37500;
+				if(old->table[j].rate==1040000)
+					new->table[j].volt = old->table[j].volt - 37500;
+				if(old->table[j].rate==936000)
+					new->table[j].volt = old->table[j].volt - 37500;
+				if(old->table[j].rate==832000)
+					new->table[j].volt = old->table[j].volt - 37500 - 6250;
+				if(old->table[j].rate==728000)
+					new->table[j].volt = old->table[j].volt - 37500 - 6250 - 6250;
+				
+				new->table[j].rate = old->table[j].rate;
+				pr_info("  freq : %7d kHz, volt = %d uV (stock : %d uV) , Chatur_BC_VT\n",
+					new->table[j].rate, new->table[j].volt,
+					old->table[j].volt);
+			}
+			else if(fvmap_header[i].num_of_lv==16&&fvmap_header[i].num_of_members==2)	//for little cores
+			{
+				if(old->table[j].rate==2054000)
+					new->table[j].volt = old->table[j].volt + 100000 + 100000 + 50000 + 6250;
+				if(old->table[j].rate==1950000)
+					new->table[j].volt = old->table[j].volt + 75000 + 50000 + 25000;
+				if(old->table[j].rate==1846000)
+					new->table[j].volt = old->table[j].volt + 50000 ;
+				if(old->table[j].rate==1742000)
+					new->table[j].volt = old->table[j].volt;
+				if(old->table[j].rate==1638000)
+					new->table[j].volt = old->table[j].volt - 25000 - 12500 - 6250;
+				if(old->table[j].rate==1534000)
+					new->table[j].volt = old->table[j].volt - 25000 - 12500 - 6250 - 6250;
+				if(old->table[j].rate==1456000)
+					new->table[j].volt = old->table[j].volt - 25000 - 12500 - 6250;
+				if(old->table[j].rate==1326000)
+					new->table[j].volt = old->table[j].volt - 25000 - 6250 - 6250;
+				if(old->table[j].rate==1222000)
+					new->table[j].volt = old->table[j].volt - 25000 - 12500 - 6250;
+				if(old->table[j].rate==1118000)
+					new->table[j].volt = old->table[j].volt - 25000 - 6250 - 6250;
+				if(old->table[j].rate==1053000)
+					new->table[j].volt = old->table[j].volt - 25000 - 6250 - 6250;
+				if(old->table[j].rate==910000)
+					new->table[j].volt = old->table[j].volt - 25000 - 6250 - 6250;
+				if(old->table[j].rate==806000)
+					new->table[j].volt = old->table[j].volt - 25000 - 6250;
+				if(old->table[j].rate==702000)
+					new->table[j].volt = old->table[j].volt - 25000 - 6250 - 6250;
+				if(old->table[j].rate==598000)
+					new->table[j].volt = old->table[j].volt - 25000 - 6250 - 6250;
+				if(old->table[j].rate==403000)
+					new->table[j].volt = old->table[j].volt - 6250 - 6250;
+				
+				new->table[j].rate = old->table[j].rate;
+				pr_info("  freq : %7d kHz, volt = %d uV (stock : %d uV) , Chatur_LC_VT\n",
+					new->table[j].rate, new->table[j].volt,
+					old->table[j].volt);
+			}
+			else if(fvmap_header[i].num_of_lv==11&&fvmap_header[i].num_of_members==1)	//for G3D
+			{
+				if(old->table[j].rate==1053000)
+						new->table[j].volt = old->table[j].volt - 43750 - 25000 - 12500;
+				if(old->table[j].rate==949000)
+						new->table[j].volt = old->table[j].volt - 43750 - 25000 - 12500;
+				if(old->table[j].rate==839000)
+						new->table[j].volt = old->table[j].volt - 43750 - 25000 - 12500;
+				if(old->table[j].rate==764000)
+						new->table[j].volt = old->table[j].volt - 43750 - 25000 - 12500;
+				if(old->table[j].rate==683000)
+						new->table[j].volt = old->table[j].volt - 37500 - 25000 - 12500;
+				if(old->table[j].rate==572000)
+						new->table[j].volt = old->table[j].volt - 37500 - 25000 - 12500;
+				if(old->table[j].rate==546000)
+						new->table[j].volt = old->table[j].volt - 31250 - 25000 - 18750;
+				if(old->table[j].rate==455000)
+						new->table[j].volt = old->table[j].volt - 31250 - 25000 - 25000;
+				if(old->table[j].rate==385000)
+						new->table[j].volt = old->table[j].volt - 25000 - 18750 - 12500;
+				if(old->table[j].rate==338000)
+						new->table[j].volt = old->table[j].volt - 25000 - 18750 - 12500;
+				if(old->table[j].rate==260000)
+						new->table[j].volt = old->table[j].volt - 25000 - 18750 - 12500;				
+				
+				new->table[j].rate = old->table[j].rate;
+				pr_info("  freq : %7d kHz, volt = %d uV (stock : %d uV) , Chatur_G3D_VT\n",
+					new->table[j].rate, new->table[j].volt,
+					old->table[j].volt);
+			}
+			else if(fvmap_header[i].num_of_lv==10&&fvmap_header[i].num_of_members==10)	//for mif
+			{
+				if(old->table[j].rate==2093000)
+					new->table[j].volt = old->table[j].volt - 50000;
+				if(old->table[j].rate==2002000)
+					new->table[j].volt = old->table[j].volt - 50000 - 6250;
+				if(old->table[j].rate==1794000)
+					new->table[j].volt = old->table[j].volt - 12500 - 6250;
+				if(old->table[j].rate==1539000)
+					new->table[j].volt = old->table[j].volt - 25000 - 6250;
+				if(old->table[j].rate==1352000)
+					new->table[j].volt = old->table[j].volt - 12500 - 6250;
+				if(old->table[j].rate==1014000)
+					new->table[j].volt = old->table[j].volt - 25000;
+				if(old->table[j].rate==845000)
+					new->table[j].volt = old->table[j].volt - 25000 - 12500;
+				if(old->table[j].rate==676000)
+					new->table[j].volt = old->table[j].volt - 25000 - 25000;
+				if(old->table[j].rate==546000)
+					new->table[j].volt = old->table[j].volt - 25000 - 25000 - 12500;
+				if(old->table[j].rate==419000)
+					new->table[j].volt = old->table[j].volt - 25000 - 25000 - 25000 - 6250;
+				
+				new->table[j].rate = old->table[j].rate;
+				pr_info("  freq : %7d kHz, volt = %d uV (stock : %d uV) , Chatur_MIF_VT\n",
+					new->table[j].rate, new->table[j].volt,
+					old->table[j].volt);
+			}
+			else if(fvmap_header[i].num_of_lv==5&&fvmap_header[i].num_of_members==10)	//for int
+			{
+				if(old->table[j].rate==667000)
+					new->table[j].volt = old->table[j].volt - 25000 - 25000 - 25000 - 6250;
+				if(old->table[j].rate==533000)
+					new->table[j].volt = old->table[j].volt - 25000 - 25000 - 6250;
+				if(old->table[j].rate==400000)
+					new->table[j].volt = old->table[j].volt - 25000 - 6250;
+				if(old->table[j].rate==200000)
+					new->table[j].volt = old->table[j].volt - 25000 - 6250;
+				if(old->table[j].rate==100000)
+					new->table[j].volt = old->table[j].volt - 25000 - 12500 -6250;
+				
+				new->table[j].rate = old->table[j].rate;
+				pr_info("  freq : %7d kHz, volt = %d uV (stock : %d uV) , Chatur_INT_VT\n",
+					new->table[j].rate, new->table[j].volt,
+					old->table[j].volt);
+			}
+		else
+			{
+				new->table[j].rate = old->table[j].rate;
+				new->table[j].volt = old->table[j].volt;
+				pr_info("  lv : [%7d], volt = %d uV (%d %%) \n",
+					new->table[j].rate, new->table[j].volt,
+					volt_offset_percent);
+			}
 		}
 
 		for (j = 0; j < fvmap_header[i].num_of_pll; j++) {
