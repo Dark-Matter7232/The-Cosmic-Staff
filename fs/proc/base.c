@@ -1234,6 +1234,7 @@ static int __set_oom_adj(struct file *file, int oom_adj, bool legacy)
 	static DEFINE_MUTEX(oom_adj_mutex);
 	struct mm_struct *mm = NULL;
 	struct task_struct *task;
+	char task_comm[TASK_COMM_LEN];
 	int err = 0;
 
 	task = get_proc_task(file_inode(file));
