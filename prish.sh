@@ -15,6 +15,9 @@ export KBUILD_BUILD_HOST=hell
 # CCACHE
 export CCACHE="$(which ccache)"
 export USE_CCACHE=1
+export CCACHE_EXEC="/home/neel/Desktop/ccache"
+ccache -M 50G
+export CCACHE_COMPRESS=1
 
 # TC LOCAL PATH
 export CROSS_COMPILE=/home/neel/Desktop/toolchain/linaro/bin/aarch64-linux-gnu-
@@ -29,7 +32,7 @@ export CC=/home/neel/Desktop/toolchain/clang/bin/clang
 #export WITH_OUTDIR=true
 
 # Export PATH flag
-export PATH="${PATH}:$(pwd)/clang/bin:$(pwd)/gcc/bin:$(pwd)/gcc32/bin"
+#export PATH="${PATH}:$(pwd)/clang/bin:$(pwd)/gcc/bin:$(pwd)/gcc32/bin"
 
 # Check if have gcc/32 & clang folder
 #if [ ! -d "$(pwd)/gcc/" ]; then
@@ -43,13 +46,6 @@ export PATH="${PATH}:$(pwd)/clang/bin:$(pwd)/gcc/bin:$(pwd)/gcc32/bin"
 #if [ ! -d "$(pwd)/clang/" ]; then
 #   git clone --depth 1 https://github.com/PrishKernel/toolchains.git -b proton-clang12 clang
 #fi
-
-# Build time
-if [ "${WITH_OUTDIR}" == true ]; then
-   if [ ! -d "$(pwd)/out" ]; then
-      mkdir out
-   fi
-fi
 
 clear
 echo "                                                     "
@@ -76,20 +72,17 @@ if [ $n -eq 1 ]; then
 echo "========================"
 echo "Clearing & making clear"
 echo "========================"
-make clean && make mrproper
-rm ./arch/arm64/boot/Image
-rm ./arch/arm64/boot/Image.gz
+make clean
+make mrproper
 rm ./Image
 rm ./output/*.zip
 rm ./PRISH/AIK/image-new.img
 rm ./PRISH/AIK/ramdisk-new.cpio.empty
 rm ./PRISH/AIK/split_img/boot.img-zImage
 rm ./PRISH/AK/Image
-rm ./PRISH/ZIP/PRISH/NXT/boot.img
 rm ./PRISH/ZIP/PRISH/M30S/boot.img
-rm ./PRISH/ZIP/PRISH/A50/boot.img
 rm ./PRISH/AK/1.zip
-rm ./out
+rm -rf M31
 fi
 
 if [ $n -eq 2 ]; then
@@ -105,26 +98,23 @@ rm ./PRISH/AIK/image-new.img
 rm ./PRISH/AIK/ramdisk-new.cpio.empty
 rm ./PRISH/AIK/split_img/boot.img-zImage
 rm ./PRISH/AK/Image
-rm ./PRISH/ZIP/PRISH/NXT/boot.img
 rm ./PRISH/ZIP/PRISH/M30S/boot.img
-rm ./PRISH/ZIP/PRISH/A50/boot.img
 rm ./PRISH/AK/1.zip
-rm ./out
+rm -rf M31
+clear
 ############################################
 # If other device make change here
 ############################################
-if [ "${WITH_OUTDIR}" == true ]; then
-   "${CCACHE}" make  m31dd_defconfig
-   "${CCACHE}" make -j4 CC=clang CLANG_TRIPLE="${CLANG_TRIPLE}"
-else
-   "${CCACHE}" make m31dd_defconfig
-   "${CCACHE}" make -j4 CC=clang CLANG_TRIPLE="${CLANG_TRIPLE}"
-fi
+echo "==============="
+echo "Building Clean"
+echo "==============="
+make exynos9610-m31dd_defconfig O=M31
+make -j$(nproc --all) O=M31
 echo ""
 echo "Kernel Compiled"
 echo ""
-cp -r ./arch/arm64/boot/Image ./PRISH/AIK/split_img/boot.img-zImage
-cp -r ./arch/arm64/boot/Image ./PRISH/AK/Image
+cp -r ./M31/arch/arm64/boot/Image ./PRISH/AIK/split_img/boot.img-zImage
+cp -r ./M31/arch/arm64/boot/Image ./PRISH/AK/Image
 fi
 
 if [ $n -eq 3 ]; then
@@ -134,20 +124,15 @@ echo "============"
 ############################################
 # If other device make change here
 ############################################
-if [ "${WITH_OUTDIR}" == true ]; then
-   "${CCACHE}" make O=out m31dd_defconfig
-   "${CCACHE}" make -j4 O=out CC=clang CLANG_TRIPLE="${CLANG_TRIPLE}"
-else
-   "${CCACHE}" make 0=out m31dd_defconfig
-   "${CCACHE}" make -j4 CC=clang CLANG_TRIPLE="${CLANG_TRIPLE}"
-fi
+make exynos9610-m31dd_defconfig O=M31
+make -j$(nproc --all) O=M31
 echo ""
 echo "Kernel Compiled"
 echo ""
 rm ./PRISH/AIK/split_img/boot.img-zImage
-cp -r ./arch/arm64/boot/Image ./PRISH/AIK/split_img/boot.img-zImage
+cp -r ./M31/arch/arm64/boot/Image ./PRISH/AIK/split_img/boot.img-zImage
 rm ./PRISH/AK/Image
-cp -r ./arch/arm64/boot/Image ./PRISH/AK/Image
+cp -r ./M31/arch/arm64/boot/Image ./PRISH/AK/Image
 echo "====================="
 echo "Dirty Build Finished"
 echo "====================="
@@ -170,41 +155,40 @@ rm ./PRISH/ZIP/PRISH/NXT/boot.img
 rm ./PRISH/ZIP/PRISH/M30S/boot.img
 rm ./PRISH/ZIP/PRISH/A50/boot.img
 rm ./PRISH/AK/1.zip
-rm ./out
+rm -rf M31
+clear
 ############################################
 # If other device make change here
 ############################################
-if [ "${WITH_OUTDIR}" == true ]; then
-   "${CCACHE}" make m30sdd_defconfig
-   "${CCACHE}" make -j4 CC=clang CLANG_TRIPLE="${CLANG_TRIPLE}"
-else
-   "${CCACHE}" make m30sdd_defconfig
-   "${CCACHE}" make -j4 CC=clang CLANG_TRIPLE="${CLANG_TRIPLE}"
-fi
+echo "======================="
+echo "Making kernel with ZIP"
+echo "======================="
+make exynos9610-m31dd_defconfig O=M31
+make -j$(nproc --all) O=M31
 echo "Kernel Compiled"
 echo ""
 echo "======================="
 echo "Packing Kernel INTO ZIP"
 echo "======================="
 echo ""
-cp -r ./arch/arm64/boot/Image ./PRISH/AIK/split_img/boot.img-zImage
-cp -r ./arch/arm64/boot/Image ./PRISH/AK/Image
+cp -r ./M31/arch/arm64/boot/Image ./PRISH/AIK/split_img/boot.img-zImage
+cp -r ./M31/arch/arm64/boot/Image ./PRISH/AK/Image
 ./PRISH/AIK/repackimg.sh
-cp -r ./PRISH/AIK/image-new.img ./PRISH/ZIP/PRISH/M30S/boot.img
+cp -r ./PRISH/AIK/image-new.img ./PRISH/ZIP/PRISH/M31/boot.img
 cd PRISH/ZIP
 echo "==========================="
 echo "Packing into Flashable zip"
 echo "==========================="
 ./zip.sh
 cd ../..
-cp -r ./PRISH/ZIP/1.zip ./output/PrishKernel-R1-M30sdd.zip
+cp -r ./PRISH/ZIP/1.zip ./output/PrishKernel-ONEUI-R1-M31.zip
 cd output
 echo ""
 pwd
 cd ..
 echo " "
 echo "======================================================="
-echo "get PrishKernel-Px-QQ-M30sdd.zip from upper given path"
+echo "get PrishKernel-Rx-M31dd.zip from upper given path"
 echo "======================================================="
 fi
 
@@ -214,10 +198,10 @@ echo "Transfering Files"
 echo "====================="
 rm ./PRISH/AIK/split_img/boot.img-zImage
 rm ./output/Pri*
-cp -r ./arch/arm64/boot/Image ./output/Zimage/Image
-cp -r ./arch/arm64/boot/Image ./AIK/split_img/boot.img-zImage
+cp -r ./M31/arch/arm64/boot/Image ./output/Zimage/Image
+cp -r ./M31/arch/arm64/boot/Image ./AIK/split_img/boot.img-zImage
 ./PRISH/AIK/repackimg.sh
-cp -r ./PRISH/AIK/image-new.img ./PRISH/ZIP/PRISH/M30S/boot.img
+cp -r ./PRISH/AIK/image-new.img ./PRISH/ZIP/PRISH/M31/boot.img
 cd PRISH/ZIP
 echo " "
 echo "==========================="
@@ -225,13 +209,13 @@ echo "Packing into Flashable zip"
 echo "==========================="
 ./zip.sh
 cd ../..
-cp -r ./PRISH/ZIP/1.zip ./output/PrishKernel-R1-M30sdd.zip
+cp -r ./PRISH/ZIP/1.zip ./output/PrishKernel-ONEUI-R1-M31.zip
 cd output
 cd ..
 echo " "
 pwd
 echo "======================================================"
-echo "get PrishKernel-Rx-M21dd.zip from upper given path"
+echo "get PrishKernel-Rx-M31.zip from upper given path"
 echo "======================================================"
 fi
 
@@ -241,7 +225,7 @@ echo "ADDING IN ANYKERNEL"
 echo "===================="
 rm ./output/Any*
 rm ./PRISH/AK/Image
-cp -r ./arch/arm64/boot/Image ./PRISH/AK/Image
+cp -r ./M31/arch/arm64/boot/Image ./PRISH/AK/Image
 cd PRISH/AK
 echo " "
 echo "=========================="
@@ -249,7 +233,7 @@ echo "Packing into Anykernelzip"
 echo "=========================="
 ./zip.sh
 cd ../..
-cp -r ./PRISH/AK/1*.zip ./output/PrishKernel-R1-Ak-M30sdd.zip
+cp -r ./PRISH/AK/1*.zip ./output/PrishKernel-ONEUI-R1-Ak-M31.zip
 cd output
 cd ..
 echo " "
@@ -265,5 +249,6 @@ echo "Exiting"
 echo "========"
 exit
 fi
+
 
 
