@@ -1869,13 +1869,10 @@ static inline int convert_context_handle_invalid_context(struct context *context
 	u32 len;
 
 // [ SEC_SELINUX_PORTING_COMMON
-#ifdef CONFIG_ALWAYS_ENFORCE
-#if !defined(CONFIG_RKP_KDP)
 #ifdef CONFIG_SECURITY_SELINUX_ALWAYS_ENFORCE
 	selinux_enforcing = 1;
 #elif defined(CONFIG_SECURITY_SELINUX_ALWAYS_PERMISSIVE)
 	selinux_enforcing = 0;
-#endif
 #endif
 // ] SEC_SELINUX_PORTING_COMMON
 	if (selinux_enforcing)
@@ -3614,5 +3611,4 @@ int security_read_policy(void **data, size_t *len)
 
 	*len = (unsigned long)fp.data - (unsigned long)*data;
 	return 0;
-
 }
