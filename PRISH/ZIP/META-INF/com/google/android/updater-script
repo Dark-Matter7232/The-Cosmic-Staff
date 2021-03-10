@@ -1,0 +1,30 @@
+ui_print(" ");
+ui_print("-- Installing PRISH-KERNEL R1");
+ui_print(" ");
+ui_print("-- Preparing Device Partitions");
+ui_print(" ");
+ui_print("-- Flashing Kernel Image");
+###############################################
+#7870
+#ui_print(" ");
+#ui_print("-- Flashing kernel on J7nxt");
+#package_extract_file("PRISH/NXT/boot.img", "/dev/block/platform/13540000.dwmmc0/by-name/BOOT");
+###############################################
+
+###############################################
+#9610
+#ui_print(" ");
+#ui_print("-- Flashing kernel on A50");
+#package_extract_file("PRISH/A50/boot.img", "/dev/block/platform/13520000.ufs/by-name/boot");
+###############################################
+
+###############################################
+#9611
+ui_print(" ");
+ui_print("-- Flashing kernel on version M31");
+package_extract_file("PRISH/M31/boot.img", "/dev/block/platform/13520000.ufs/by-name/boot");
+###############################################
+ui_print(" ");
+ui_print("-- Finishing Installation");
+ui_print(" ");
+ui_print(" ");
