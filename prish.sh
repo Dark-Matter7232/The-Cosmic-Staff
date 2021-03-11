@@ -174,7 +174,7 @@ echo " "
 echo "=========================="
 echo "Packing into Anykernelzip"
 echo "=========================="
-./zip.sh
+. zip.sh
 cd ../..
 cp -r ./PRISH/AK/1*.zip ./output/PrishKernel-ONEUI-R1-Ak-M31.zip
 cd output
