@@ -167,29 +167,23 @@ make exynos9610-m31dd_defconfig O=M31
 make -j$(nproc --all) O=M31
 echo "Kernel Compiled"
 echo ""
-echo "======================="
-echo "Packing Kernel INTO ZIP"
-echo "======================="
-echo ""
-cp -r ./M31/arch/arm64/boot/Image ./PRISH/AIK/split_img/boot.img-zImage
+rm ./PRISH/AK/Image
 cp -r ./M31/arch/arm64/boot/Image ./PRISH/AK/Image
-./PRISH/AIK/repackimg.sh
-cp -r ./PRISH/AIK/image-new.img ./PRISH/ZIP/PRISH/M31/boot.img
-cd PRISH/ZIP
-echo "==========================="
-echo "Packing into Flashable zip"
-echo "==========================="
+cd PRISH/AK
+echo " "
+echo "=========================="
+echo "Packing into Anykernelzip"
+echo "=========================="
 ./zip.sh
 cd ../..
-cp -r ./PRISH/ZIP/1.zip ./output/PrishKernel-ONEUI-R1-M31.zip
+cp -r ./PRISH/AK/1*.zip ./output/PrishKernel-ONEUI-R1-Ak-M31.zip
 cd output
-echo ""
-pwd
 cd ..
 echo " "
-echo "======================================================="
-echo "get PrishKernel-Rx-M31dd.zip from upper given path"
-echo "======================================================="
+pwd
+echo "============================================"
+echo "get Anykernel.zip from upper given path"
+echo "============================================"
 fi
 
 if [ $n -eq 5 ]; then
@@ -209,7 +203,7 @@ echo "Packing into Flashable zip"
 echo "==========================="
 ./zip.sh
 cd ../..
-cp -r ./PRISH/ZIP/1.zip ./output/PrishKernel-ONEUI-R1-M31.zip
+cp -r ./PRISH/ZIP/1.zip ./output/PrishKernel-ONEUI-R2-M31.zip
 cd output
 cd ..
 echo " "
@@ -233,7 +227,7 @@ echo "Packing into Anykernelzip"
 echo "=========================="
 ./zip.sh
 cd ../..
-cp -r ./PRISH/AK/1*.zip ./output/PrishKernel-ONEUI-R1-Ak-M31.zip
+cp -r ./PRISH/AK/1*.zip ./output/PrishKernel-ONEUI-R2-Ak-M31.zip
 cd output
 cd ..
 echo " "
