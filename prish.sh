@@ -99,7 +99,7 @@ rm ./PRISH/AIK/ramdisk-new.cpio.empty
 rm ./PRISH/AIK/split_img/boot.img-zImage
 rm ./PRISH/AK/Image
 rm ./PRISH/ZIP/PRISH/M30S/boot.img
-rm ./PRISH/AK/1.zip
+rm ./PRISH/AK/*.zip
 rm -rf M31
 clear
 ############################################
@@ -154,7 +154,7 @@ rm ./PRISH/AK/Image
 rm ./PRISH/ZIP/PRISH/NXT/boot.img
 rm ./PRISH/ZIP/PRISH/M30S/boot.img
 rm ./PRISH/ZIP/PRISH/A50/boot.img
-rm ./PRISH/AK/1.zip
+rm ./PRISH/AK/*.zip
 rm -rf M31
 clear
 ############################################
