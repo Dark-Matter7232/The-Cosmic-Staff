@@ -159,6 +159,7 @@ rm ./PRISH/ZIP/PRISH/A50/boot.img
 rm ./PRISH/AK/*.zip
 rm -rf M31
 rm -rf M21
+rm -rf A51
 clear
 ############################################
 # If other device make change here
@@ -177,6 +178,7 @@ cd PRISH/AK
 cd ../..
 cp -r ./PRISH/AK/1*.zip ./output/PrishKernel-ONEUI-R3-Ak-M31.zip
 rm ./PRISH/AK/*.zip
+rm ./PRISH/AK/Image
 echo "===="
 echo "M21"
 echo "===="
@@ -191,6 +193,7 @@ cd PRISH/AK
 cd ../..
 cp -r ./PRISH/AK/1*.zip ./output/PrishKernel-ONEUI-R3-Ak-M21.zip
 rm ./PRISH/AK/*.zip
+rm ./PRISH/AK/Image
 echo "==="
 echo "A51"
 echo "==="
@@ -205,6 +208,7 @@ cd PRISH/AK
 cd ../..
 cp -r ./PRISH/AK/1*.zip ./output/PrishKernel-ONEUI-R3-Ak-A51.zip
 rm ./PRISH/AK/*.zip
+rm ./PRISH/AK/Image
 echo "==="
 echo "Done"
 echo "==="
