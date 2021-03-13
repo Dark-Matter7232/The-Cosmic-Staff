@@ -20,7 +20,7 @@ ccache -M 50G
 export CCACHE_COMPRESS=1
 
 # TC LOCAL PATH
-export CROSS_COMPILE=/home/neel/Desktop/toolchain/linaro/bin/aarch64-linux-gnu-
+export CROSS_COMPILE=/home/neel/Desktop/toolchain/gcc/bin/aarch64-linux-android-
 export CLANG_TRIPLE=/home/neel/Desktop/toolchain/clang/bin/aarch64-linux-gnu-
 export CC=/home/neel/Desktop/toolchain/clang/bin/clang
 
@@ -62,7 +62,7 @@ echo "Select"
 echo "1 = Clear"
 echo "2 = Clean Build M31+M21"
 echo "3 = Dirty Build M31+M21"
-echo "4 = Kernel+zip M31+M21"
+echo "4 = Kernel+zip M31+M21+A51"
 echo "5 = AIK+ZIP"
 echo "6 = Anykernel"
 echo "7 = Exit"
@@ -163,9 +163,9 @@ clear
 ############################################
 # If other device make change here
 ############################################
-echo "======================="
-echo "Making kernel with ZIP"
-echo "======================="
+echo "===="
+echo "M31"
+echo "===="
 make exynos9610-m31dd_defconfig O=M31
 make -j$(nproc --all) O=M31
 echo "Kernel Compiled"
@@ -173,14 +173,13 @@ echo ""
 rm ./PRISH/AK/Image
 cp -r ./M31/arch/arm64/boot/Image ./PRISH/AK/Image
 cd PRISH/AK
-echo " "
-echo "=========================="
-echo "Packing into Anykernelzip"
-echo "=========================="
 . zip.sh
 cd ../..
 cp -r ./PRISH/AK/1*.zip ./output/PrishKernel-ONEUI-R3-Ak-M31.zip
 rm ./PRISH/AK/*.zip
+echo "===="
+echo "M21"
+echo "===="
 make M21_defconfig O=M21
 make -j$(nproc --all) O=M21
 echo "Kernel Compiled"
@@ -188,19 +187,27 @@ echo ""
 rm ./PRISH/AK/Image
 cp -r ./M21/arch/arm64/boot/Image ./PRISH/AK/Image
 cd PRISH/AK
-echo " "
-echo "=========================="
-echo "Packing into Anykernelzip"
-echo "=========================="
 . zip.sh
 cd ../..
 cp -r ./PRISH/AK/1*.zip ./output/PrishKernel-ONEUI-R3-Ak-M21.zip
 rm ./PRISH/AK/*.zip
-echo " "
-pwd
-echo "============================================"
-echo "get Anykernel.zip from upper given path"
-echo "============================================"
+echo "==="
+echo "A51"
+echo "==="
+make A51_defconfig O=A51
+make -j$(nproc --all) O=A51
+echo "Kernel Compiled"
+echo ""
+rm ./PRISH/AK/Image
+cp -r ./A51/arch/arm64/boot/Image ./PRISH/AK/Image
+cd PRISH/AK
+. zip.sh
+cd ../..
+cp -r ./PRISH/AK/1*.zip ./output/PrishKernel-ONEUI-R3-Ak-A51.zip
+rm ./PRISH/AK/*.zip
+echo "==="
+echo "Done"
+echo "==="
 fi
 
 if [ $n -eq 5 ]; then
