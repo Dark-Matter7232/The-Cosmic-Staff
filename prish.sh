@@ -60,9 +60,9 @@ echo "            coded by Neel0210, DAvinash97, Durasame  "
 echo "                                                     "
 echo "Select"
 echo "1 = Clear"
-echo "2 = Clean Build"
-echo "3 = Dirty Build"
-echo "4 = Kernel+zip"
+echo "2 = Clean Build M31+M21"
+echo "3 = Dirty Build M31+M21"
+echo "4 = Kernel+zip M31+M21"
 echo "5 = AIK+ZIP"
 echo "6 = Anykernel"
 echo "7 = Exit"
@@ -83,6 +83,7 @@ rm ./PRISH/AK/Image
 rm ./PRISH/ZIP/PRISH/M30S/boot.img
 rm ./PRISH/AK/1.zip
 rm -rf M31
+rm -rf M21
 fi
 
 if [ $n -eq 2 ]; then
@@ -101,6 +102,7 @@ rm ./PRISH/AK/Image
 rm ./PRISH/ZIP/PRISH/M30S/boot.img
 rm ./PRISH/AK/*.zip
 rm -rf M31
+rm -rf M21
 clear
 ############################################
 # If other device make change here
@@ -156,6 +158,7 @@ rm ./PRISH/ZIP/PRISH/M30S/boot.img
 rm ./PRISH/ZIP/PRISH/A50/boot.img
 rm ./PRISH/AK/*.zip
 rm -rf M31
+rm -rf M21
 clear
 ############################################
 # If other device make change here
@@ -177,8 +180,22 @@ echo "=========================="
 . zip.sh
 cd ../..
 cp -r ./PRISH/AK/1*.zip ./output/PrishKernel-ONEUI-R3-Ak-M31.zip
-cd output
-cd ..
+rm ./PRISH/AK/*.zip
+make M21_defconfig O=M21
+make -j$(nproc --all) O=M21
+echo "Kernel Compiled"
+echo ""
+rm ./PRISH/AK/Image
+cp -r ./M21/arch/arm64/boot/Image ./PRISH/AK/Image
+cd PRISH/AK
+echo " "
+echo "=========================="
+echo "Packing into Anykernelzip"
+echo "=========================="
+. zip.sh
+cd ../..
+cp -r ./PRISH/AK/1*.zip ./output/PrishKernel-ONEUI-R3-Ak-M21.zip
+rm ./PRISH/AK/*.zip
 echo " "
 pwd
 echo "============================================"
