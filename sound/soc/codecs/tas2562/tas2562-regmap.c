@@ -679,8 +679,6 @@ static void irq_work_routine(struct work_struct *work)
 		dev_err(p_tas2562->dev, "brownout!\n");
 	} else
 		p_tas2562->mn_err_code &= ~ERROR_BROWNOUT;
-
-		goto reload;
 	} else {
 		n_counter = 2;
 
