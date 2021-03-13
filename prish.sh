@@ -176,7 +176,7 @@ echo "Packing into Anykernelzip"
 echo "=========================="
 . zip.sh
 cd ../..
-cp -r ./PRISH/AK/1*.zip ./output/PrishKernel-ONEUI-R2-Ak-M31.zip
+cp -r ./PRISH/AK/1*.zip ./output/PrishKernel-ONEUI-R3-Ak-M31.zip
 cd output
 cd ..
 echo " "
@@ -203,7 +203,7 @@ echo "Packing into Flashable zip"
 echo "==========================="
 ./zip.sh
 cd ../..
-cp -r ./PRISH/ZIP/1.zip ./output/PrishKernel-ONEUI-R2-M31.zip
+cp -r ./PRISH/ZIP/1.zip ./output/PrishKernel-ONEUI-R3-M31.zip
 cd output
 cd ..
 echo " "
@@ -227,7 +227,7 @@ echo "Packing into Anykernelzip"
 echo "=========================="
 ./zip.sh
 cd ../..
-cp -r ./PRISH/AK/1*.zip ./output/PrishKernel-ONEUI-R2-Ak-M31.zip
+cp -r ./PRISH/AK/1*.zip ./output/PrishKernel-ONEUI-R3-Ak-M31.zip
 cd output
 cd ..
 echo " "
