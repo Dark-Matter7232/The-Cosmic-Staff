@@ -41,10 +41,15 @@
 #include "dma-buf-trace.h"
 
 static struct kmem_cache *kmem_attach_pool;
+static struct kmem_cache *kmem_dma_buf_pool;
 
 void __init init_dma_buf_kmem_pool(void)
 {
 	kmem_attach_pool = KMEM_CACHE(dma_buf_attachment, SLAB_HWCACHE_ALIGN | SLAB_PANIC);
+	kmem_dma_buf_pool = kmem_cache_create("dma_buf",
+		(sizeof(struct dma_buf) + sizeof(struct reservation_object)),
+		(sizeof(struct dma_buf) + sizeof(struct reservation_object)),
+		SLAB_HWCACHE_ALIGN | SLAB_PANIC, NULL);
 }
 
 static inline int is_dma_buf_file(struct file *);
@@ -422,6 +427,7 @@ struct dma_buf *dma_buf_export(const struct dma_buf_export_info *exp_info)
 	size_t alloc_size = sizeof(struct dma_buf);
 	char filename[MAX_EXP_FILE_NAME];
 	int ret;
+	bool from_kmem;
 
 	if (!exp_info->resv)
 		alloc_size += sizeof(struct reservation_object);
@@ -449,8 +455,17 @@ struct dma_buf *dma_buf_export(const struct dma_buf_export_info *exp_info)
 		goto err_module;
 	}
 
-	dmabuf->exp_name = kstrdup(exp_info->exp_name, GFP_KERNEL);
-	if (!dmabuf->exp_name) {
+	from_kmem = (alloc_size ==
+		     (sizeof(struct dma_buf) + sizeof(struct reservation_object)));
+
+	if (from_kmem) {
+		dmabuf = kmem_cache_zalloc(kmem_dma_buf_pool, GFP_KERNEL);
+		dmabuf->from_kmem = true;
+	} else {
+		dmabuf = kzalloc(alloc_size, GFP_KERNEL);
+	}
+
+	if (!dmabuf) {
 		ret = -ENOMEM;
 		goto err_expname;
 	}
@@ -493,9 +508,12 @@ struct dma_buf *dma_buf_export(const struct dma_buf_export_info *exp_info)
 	return dmabuf;
 
 err_dmabuf:
-	kfree(dmabuf->exp_name);
-err_expname:
-	kfree(dmabuf);
+	if (from_kmem)
+		kmem_cache_free(kmem_dma_buf_pool, dmabuf);
+	else
+		kfree(dmabuf);
+err_name:
+	kfree(bufname);
 err_module:
 	module_put(exp_info->owner);
 	return ERR_PTR(ret);
