@@ -167,7 +167,7 @@ clear
 echo "===="
 echo "M31"
 echo "===="
-make exynos9610-m31dd_defconfig O=M31
+make M31_defconfig O=M31
 make -j$(nproc --all) O=M31
 echo "Kernel Compiled"
 echo ""
