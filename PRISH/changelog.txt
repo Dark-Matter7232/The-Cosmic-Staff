@@ -2,8 +2,7 @@
 <b>PrishKernel R3</b>
 Maintainer: @Neel0210
 
-<code>
-• Latest kernel based on 4.14.115
+<code>• Latest kernel based on 4.14.115
 • Supports ONEUI and GSI
 • Increased Charging current value
 • Removed some security
@@ -20,13 +19,12 @@ Maintainer: @Neel0210
 • Added CD ROM/DVD file system
 • Disabled default kernel debugging
 • Added wireGuard support
-• Enabled Deadline IO SCHED
-</code>
+• Enabled Deadline IO SCHED</code>
 
 <b>Notes:</b>
-• If u want to Report Any Bug Mention me with Proper Logs
+<code>• If u want to Report Any Bug Mention me with Proper Logs
 • I am not responsible for bricked devices, dead SD card
-• Any Sort of Kanging Would Reported Without Hesitation
+• Any Sort of Kanging Would Reported Without Hesitation</code>
 
 Follow: @PrishUpdates
 Join: @PrishSupport
