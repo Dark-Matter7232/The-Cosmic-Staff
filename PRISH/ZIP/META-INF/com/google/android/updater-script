@@ -1,30 +1,62 @@
 ui_print(" ");
-ui_print("-- Installing PRISH-KERNEL R1");
+ui_print(" PrishKernel                    ");
+ui_print("                 R3             ");
+ui_print("                                ");
+ui_print(" Device           : universal9610/11");
+ui_print(" Manufacturer     : samsung");
+ui_print(" Version          : R3");
+ui_print(" Developer        : Neel0210");
 ui_print(" ");
-ui_print("-- Preparing Device Partitions");
+ifelse(is_mounted("/system_root"), unmount("/system_root"));
+ifelse(is_mounted("/vendor"), unmount("/vendor"));
+ifelse(is_mounted("/cache"), unmount("/cache"));
+ui_print("- Huge thanks to @Astrako, @El0xren, @chatur2709,@airfraa, @DAvinash97, @physwizz, @OGSPARTANICUS and ofc and testers as well for their time");
 ui_print(" ");
-ui_print("-- Flashing Kernel Image");
-###############################################
-#7870
-#ui_print(" ");
-#ui_print("-- Flashing kernel on J7nxt");
-#package_extract_file("PRISH/NXT/boot.img", "/dev/block/platform/13540000.dwmmc0/by-name/BOOT");
-###############################################
-
-###############################################
-#9610
-#ui_print(" ");
-#ui_print("-- Flashing kernel on A50");
-#package_extract_file("PRISH/A50/boot.img", "/dev/block/platform/13520000.ufs/by-name/boot");
-###############################################
-
-###############################################
-#9611
+ui_print("Getting Device Info...");
 ui_print(" ");
-ui_print("-- Flashing kernel on version M31");
-package_extract_file("PRISH/M31/boot.img", "/dev/block/platform/13520000.ufs/by-name/boot");
-###############################################
+if is_substring("A505", getprop("ro.boot.bootloader")) then
+    ui_print("Target: A50 detected, extracting files...");
+    package_extract_file("PRISH/D/A50/boot.img", "/dev/block/platform/13520000.ufs/by-name/boot");
+endif;
+if is_substring("A507", getprop("ro.boot.bootloader")) then
+    ui_print("Target: A50s detected, extracting files...");
+    package_extract_file("PRISH/D/A50S/boot.img", "/dev/block/platform/13520000.ufs/by-name/boot");
+endif;
+if is_substring("A515", getprop("ro.boot.bootloader")) then
+    ui_print("Target: A51 detected, extracting files...");
+    package_extract_file("PRISH/D/A51/boot.img", "/dev/block/by-name/boot");
+endif;
+if is_substring("M215", getprop("ro.boot.bootloader")) then
+    ui_print("Target: M21 detected, extracting files...");
+    package_extract_file("PRISH/D/M21/boot.img", "/dev/block/by-name/boot");
+endif;
+if is_substring("M307", getprop("ro.boot.bootloader")) then
+    ui_print("Target: M30s detected, extracting files...");
+    package_extract_file("PRISH/D/M30S/boot.img", "/dev/block/platform/13520000.ufs/by-name/boot");
+endif;
+if is_substring("M315", getprop("ro.boot.bootloader")) then
+    ui_print("Target: M31 detected, extracting files...");
+    package_extract_file("PRISH/D/M31/boot.img", "/dev/block/by-name/boot");
+endif;
+if is_substring("F415", getprop("ro.boot.bootloader")) then
+    ui_print("Target: F41 detected, extracting files...");
+    package_extract_file("PRISH/D/F41/boot.img", "/dev/block/by-name/boot");
+endif;
+package_extract_dir("PRISH/system_root", "/system_root");
+package_extract_dir("PRISH/vendor", "/vendor");
+ui_print("-- Trimming partitions");
+package_extract_file("PRISH/fstrim", "/tmp/fstrim");
+set_metadata("/tmp/fstrim", "uid", 0, "gid", 0, "mode", 0755);
+run_program("/sbin/busybox", "fstrim", "-v", "/system_root");
+run_program("/sbin/busybox", "fstrim", "-v", "/vendor");
+run_program("/sbin/busybox", "fstrim", "-v", "/data");
+run_program("/sbin/busybox", "fstrim", "-v", "/cache");	
+set_progress(1.0);
+ui_print("---- Done!");
+ui_print("------ Reboot Your System Now");
 ui_print(" ");
-ui_print("-- Finishing Installation");
 ui_print(" ");
-ui_print(" ");
+ifelse(is_mounted("/system_root"), unmount("/system_root"));
+ifelse(is_mounted("/vendor"), unmount("/vendor"));		
+ifelse(is_mounted("/data"), unmount("/data"));
+ifelse(is_mounted("/cache"), unmount("/cache"));
