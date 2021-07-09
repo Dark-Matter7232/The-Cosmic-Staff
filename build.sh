@@ -57,6 +57,9 @@ setup_env() {
   echo "done"
 }
 function compile() {
+  cd usr/magisk
+  bash update_magisk.sh
+  cd ../../
   local IMAGE="$(pwd)/arch/arm64/boot/Image"
   make clean
   make mrproper
@@ -84,14 +87,16 @@ function compile() {
 }
 zip() {
   mkdir output
-  rm ./CosmicStaff/AK/Image
-  cp -r ./arch/arm64/boot/Image ./CosmicStaff/AK/Image
+  rm -rf output/*
+  rm CosmicStaff/AK/Image
+  rm -rf output/Cos*
+  cp -r arch/arm64/boot/Image CosmicStaff/AK/Image
   cd CosmicStaff/AK
-  . zip.sh
+  bash zip.sh
   cd ../..
-  cp -r ./CosmicStaff/AK/1*.zip ./output/CosmicStaff-ONEUI-T1-M21.zip
-  rm ./CosmicStaff/AK/*.zip
-  rm ./CosmicStaff/AK/Image
+  cp -r CosmicStaff/AK/1*.zip output/CosmicStaff-ONEUI-T2-M21.zip
+  rm CosmicStaff/AK/*.zip
+  rm CosmicStaff/AK/Image
 }
 add_deps
 setup_env
