@@ -27,10 +27,6 @@ add_deps() {
   if [ ! -d build-shit/gcc ]; then
     echo "Downloading gcc...."
     git clone --depth=1 https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9 build-shit/gcc
-  else
-    cd build-shit/gcc;
-    git reset --hard HEAD;
-    cd ../../
   fi
 
   echo "Done"
@@ -61,9 +57,11 @@ setup_env() {
   echo "done"
 }
 function compile() {
+  local IMAGE="$(pwd)/arch/arm64/boot/Image"
+  make clean
   make mrproper
-  make -j$(nproc) M21_defconfig O=M21
-  make -j$(nproc) O=M21 | tee $(date +"%H-%M")-log.txt
+  make -j$(nproc) M21_defconfig
+  make -j$(nproc) | tee $(date +"%H-%M")-log.txt
   SUCCESS=$?
   echo -e "${RST}"
 
@@ -72,7 +70,7 @@ function compile() {
     echo -e "${GRN}"
     echo "------------------------------------------------------------"
     echo "Compilation successful..."
-    echo "Image can be found at M21/arch/arm64/boot/Image"
+    echo "Image can be found at arch/arm64/boot/Image"
     echo  "------------------------------------------------------------"
     echo -e "${RST}"
   else
