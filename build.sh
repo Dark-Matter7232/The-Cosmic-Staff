@@ -61,8 +61,9 @@ setup_env() {
   echo "done"
 }
 function compile() {
+  make mrproper
   make -j$(nproc) M21_defconfig O=M21
-  make -j$(nproc) 2>&1 | tee $(date +"%H-%M")-log.txt
+  make -j$(nproc) O=M21 | tee $(date +"%H-%M")-log.txt
   SUCCESS=$?
   echo -e "${RST}"
 
