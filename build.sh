@@ -61,8 +61,8 @@ setup_env() {
   echo "done"
 }
 function compile() {
-  make -j$(nproc) M21_defconfig
-  screen sh -c 'make -j$(nproc) 2>&1 | tee $(date +"%H-%M")-log.txt'
+  make -j$(nproc) M21_defconfig O=M21
+  make -j$(nproc) 2>&1 | tee $(date +"%H-%M")-log.txt
   SUCCESS=$?
   echo -e "${RST}"
 
@@ -71,7 +71,7 @@ function compile() {
     echo -e "${GRN}"
     echo "------------------------------------------------------------"
     echo "Compilation successful..."
-    echo "Image can be found at out/arch/arm64/boot/Image"
+    echo "Image can be found at M21/arch/arm64/boot/Image"
     echo  "------------------------------------------------------------"
     echo -e "${RST}"
   else
