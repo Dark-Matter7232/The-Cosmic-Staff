@@ -1,8 +1,23 @@
-#Kernel #kakarot #R
-<b>PrishKernel R3</b>
-Maintainer: @Neel0210
+#Kernel #M21 #R
+<b>TheCosmicStaff T1</b>
+Maintainer: @Dark-Matter7232
 
 <code>• Latest kernel based on 4.14.115
+• binder: Disable debug mask  
+• int_sqrt: Improve 3x faster integer sqrt
+• blk: disable IO_STAT completely
+• enable CONFIG_OPTIMIZE_INLINING
+• arm64: mark (__)cpus_have_const_cap as __always_inline
+• Reduce latency on page allocation
+• No delay for WQ 
+• Add cacheline alignment
+• Don't let Google Components run in the background
+• Make zsmalloc copy rather than mapping pages
+• Tweak cpuidle governor to enter deep C state faster
+• cpuidle: enter_state: Don't needlessly calculate diff time
+• PM / sleep: Skip OOM killer toggles when kernel is compiled for Android
+• set 100Hz kernel timer
+• Add Boeffla wakelock blocker
 • Supports ONEUI and GSI
 • Increased Charging current value
 • Removed some security
@@ -25,6 +40,3 @@ Maintainer: @Neel0210
 <code>• If u want to Report Any Bug Mention me with Proper Logs
 • I am not responsible for bricked devices, dead SD card
 • Any Sort of Kanging Would Reported Without Hesitation</code>
-
-Follow: @PrishUpdates
-Join: @PrishSupport
