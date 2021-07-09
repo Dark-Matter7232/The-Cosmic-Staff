@@ -1,4 +1,3 @@
-
 gcc/
 clang/
 M31/
@@ -7,3 +6,5 @@ A51/
 *.log
 *.pyc
 *.zip
+build-shit
+*-log.txt
