@@ -313,9 +313,9 @@ SUBARCH := $(shell uname -m | sed -e s/i.86/x86/ -e s/x86_64/x86/ \
 
 export KBUILD_BUILDHOST := $(SUBARCH)
 ARCH		?=arm64
-CROSS_COMPILE=$(CONFIG_CROSS_COMPILE:"%"=%)
-CLANG_TRIPLE=$(CROSS_COMPILE)
-CC=$(CROSS_COMPILE)gcc
+CROSS_COMPILE = /workspace/The-Cosmic-Staff/build-shit/gcc/bin/aarch64-linux-android-
+CC  = /workspace/The-Cosmic-Staff/build-shit/clang/bin/clang
+CLANG_TRIPLE = /workspace/The-Cosmic-Staff/build-shit/clang/bin/aarch64-linux-gnu-
 
 # Architecture as present in compile.h
 UTS_MACHINE 	:= $(ARCH)
