@@ -313,7 +313,9 @@ SUBARCH := $(shell uname -m | sed -e s/i.86/x86/ -e s/x86_64/x86/ \
 
 export KBUILD_BUILDHOST := $(SUBARCH)
 ARCH		?=arm64
-CROSS_COMPILE	?= $(CONFIG_CROSS_COMPILE:"%"=%)
+CROSS_COMPILE=$(CONFIG_CROSS_COMPILE:"%"=%)
+CLANG_TRIPLE=$(CROSS_COMPILE)
+CC=$(CROSS_COMPILE)gcc
 
 # Architecture as present in compile.h
 UTS_MACHINE 	:= $(ARCH)

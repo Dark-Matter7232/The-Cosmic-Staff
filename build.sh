@@ -82,6 +82,20 @@ function compile() {
   fi
 
 }
+zip() {
+  mkdir output
+  rm -rf output/*
+  rm CosmicStaff/AK/Image
+  rm -rf output/Cos*
+  cp -r arch/arm64/boot/Image CosmicStaff/AK/Image
+  cd CosmicStaff/AK
+  bash zip.sh
+  cd ../..
+  cp -r CosmicStaff/AK/1*.zip output/CosmicStaff-ONEUI-T2-M21.zip
+  rm CosmicStaff/AK/*.zip
+  rm CosmicStaff/AK/Image
+}
 add_deps
 setup_env
 compile
+zip
