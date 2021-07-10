@@ -16,7 +16,11 @@ add_deps() {
 
   if [ ! -d build-shit/clang ]
   then
-    git clone --depth=1 https://github.com/kdrag0n/proton-clang.git build-shit/clang
+    cd build-shit;
+    wget https://github.com/kdrag0n/proton-clang/archive/refs/tags/20201212.tar.gz -O clang.tar.gz; 
+    bsdtar xf clang.tar.gz;
+    mv proton-clang-20201212 clang
+    cd ../
   fi
 
   if [ ! -d build-shit/gcc32 ]
@@ -51,9 +55,6 @@ setup_env() {
   export USE_CCACHE=1
   export CCACHE_EXEC="build-shit/ccache"
   ccache -M 50G
-  export CROSS_COMPILE=$(pwd)/build-shit/gcc/bin/aarch64-linux-android-
-  export CLANG_TRIPLE=$(pwd)/build-shit/clang/bin/aarch64-linux-gnu-
-  export CC=$(pwd)/build-shit/clang/bin/clang
   echo "done"
 }
 function compile() {
@@ -83,7 +84,6 @@ function compile() {
 
 }
 zip() {
-  mkdir output
   rm -rf output/*
   rm CosmicStaff/AK/Image
   rm -rf output/Cos*
@@ -91,7 +91,7 @@ zip() {
   cd CosmicStaff/AK
   bash zip.sh
   cd ../..
-  cp -r CosmicStaff/AK/1*.zip output/CosmicStaff-ONEUI-T2-M21.zip
+  cp -r CosmicStaff/AK/1*.zip output/CosmicStaff-ONEUI-R1-M21.zip
   rm CosmicStaff/AK/*.zip
   rm CosmicStaff/AK/Image
 }
