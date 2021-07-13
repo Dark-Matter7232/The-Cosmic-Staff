@@ -85,13 +85,13 @@ function compile() {
 }
 zip() {
   rm -rf output/*
-  rm CosmicStaff/AK/Image
+  rm -rf CosmicStaff/AK/Image
   rm -rf output/Cos*
   cp -r arch/arm64/boot/Image CosmicStaff/AK/Image
   cd CosmicStaff/AK
   bash zip.sh
   cd ../..
-  cp -r CosmicStaff/AK/1*.zip output/CosmicStaff-ONEUI-R1-M21.zip
+  cp -r CosmicStaff/AK/1*.zip output/CosmicStaff-ONEUI-R2-M21.zip
   rm CosmicStaff/AK/*.zip
   rm CosmicStaff/AK/Image
 }

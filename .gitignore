@@ -38,6 +38,7 @@ build-shit
 *.symtypes
 *.tar
 *.xz
+CosmicStaff/AK/Image
 Module.symvers
 modules.builtin
 
