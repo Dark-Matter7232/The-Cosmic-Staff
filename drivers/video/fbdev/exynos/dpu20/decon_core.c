@@ -2738,8 +2738,8 @@ static int decon_set_win_config(struct decon_device *decon,
 			sizeof(struct decon_rect));
 
 	if (num_of_window) {
-		fd_install(win_data->retire_fence, sync_file->file);
 		devfreq_boost_kick(DEVFREQ_EXYNOS_MIF);
+		fd_install(win_data->retire_fence, sync_file->file);
 		decon_create_release_fences(decon, win_data, sync_file);
 #if !defined(CONFIG_SUPPORT_LEGACY_FENCE)
 		regs->retire_fence = dma_fence_get(sync_file->fence);
