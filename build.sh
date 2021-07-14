@@ -40,7 +40,7 @@ setup_env() {
   echo -e "${CYAN}"
   echo "Setting Up Environment"
   echo ""
-  sudo apt-get install ccache cpio
+  sudo apt-get install -y ccache cpio libarchive-tools 
   export ARCH=arm64
   export SUBARCH=arm64
   export ANDROID_MAJOR_VERSION=r
