@@ -9,6 +9,7 @@ RST='\033[0m'
 
 add_deps() {
   echo "Cloning dependencies if they don't exist...."
+  sudo apt-get install -y ccache cpio libarchive-tools 
   if [ ! -d build-shit ]
   then
     mkdir build-shit
@@ -40,7 +41,6 @@ setup_env() {
   echo -e "${CYAN}"
   echo "Setting Up Environment"
   echo ""
-  sudo apt-get install -y ccache cpio libarchive-tools 
   export ARCH=arm64
   export SUBARCH=arm64
   export ANDROID_MAJOR_VERSION=r
@@ -58,6 +58,7 @@ setup_env() {
   echo "done"
 }
 function compile() {
+  read -p "Write the Kernel version: " KV
   local IMAGE="$(pwd)/arch/arm64/boot/Image"
   make clean
   make mrproper
@@ -84,6 +85,7 @@ function compile() {
 
 }
 zip() {
+  echo -e "${GRN}"
   rm -rf output/*
   rm -rf CosmicStaff/AK/Image
   rm -rf output/Cos*
@@ -91,7 +93,7 @@ zip() {
   cd CosmicStaff/AK
   bash zip.sh
   cd ../..
-  cp -r CosmicStaff/AK/1*.zip output/CosmicStaff-ONEUI-R2-M21.zip
+  cp -r CosmicStaff/AK/1*.zip output/CosmicStaff-ONEUI-R2-$KV-M21.zip
   rm CosmicStaff/AK/*.zip
   rm CosmicStaff/AK/Image
 }
