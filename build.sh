@@ -8,6 +8,7 @@ RST='\033[0m'
 
 
 add_deps() {
+  RED='\033[01;31m'
   echo "Cloning dependencies if they don't exist...."
   sudo apt-get install -y ccache cpio libarchive-tools 
   if [ ! -d build-shit ]
@@ -17,6 +18,7 @@ add_deps() {
 
   if [ ! -d build-shit/clang ]
   then
+    echo "Downloading proton-clang...."
     cd build-shit;
     wget https://github.com/kdrag0n/proton-clang/archive/refs/tags/20201212.tar.gz -O clang.tar.gz; 
     bsdtar xf clang.tar.gz;
@@ -26,6 +28,7 @@ add_deps() {
 
   if [ ! -d build-shit/gcc32 ]
   then
+    echo "Downloading gcc32...."
     git clone --depth=1 git://github.com/LineageOS/android_prebuilts_gcc_linux-x86_arm_arm-linux-androideabi-4.9 build-shit/gcc32
   fi
 
@@ -33,6 +36,11 @@ add_deps() {
     echo "Downloading gcc...."
     git clone --depth=1 https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9 build-shit/gcc
   fi
+
+  if [ ! -d build-shit/ccache ]; then
+    echo "create folder for ccache...."
+    mkdir build-shit/ccache
+  fi   
 
   echo "Done"
 }
