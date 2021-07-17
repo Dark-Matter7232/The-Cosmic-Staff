@@ -93,7 +93,7 @@ zip() {
   cd CosmicStaff/AK
   bash zip.sh
   cd ../..
-  cp -r CosmicStaff/AK/1*.zip output/CosmicStaff-ONEUI-R2-$KV-M21.zip
+  cp -r CosmicStaff/AK/1*.zip output/CosmicStaff-ONEUI-$KV-M21.zip
   rm CosmicStaff/AK/*.zip
   rm CosmicStaff/AK/Image
 }
