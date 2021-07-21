@@ -85,6 +85,8 @@
  * it should go may be a better scenario.
  */
 #define SCHED_FEAT_RT_PUSH_IPI 1
+#else
+#define SCHED_FEAT_RT_PUSH_IPI 0
 #endif
 
 #define SCHED_FEAT_RT_RUNTIME_SHARE 1
