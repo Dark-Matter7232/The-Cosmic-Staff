@@ -108,7 +108,7 @@ zip() {
 
 upload() {
   cd output
-  wget htttps://temp.sh/up.sh
+  wget https://temp.sh/up.sh
   chmod +x up.sh
   echo -e "${RED}"
   ./up.sh Cos*
