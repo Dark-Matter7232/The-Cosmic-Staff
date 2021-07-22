@@ -512,8 +512,8 @@ err_dmabuf:
 		kmem_cache_free(kmem_dma_buf_pool, dmabuf);
 	else
 		kfree(dmabuf);
-err_name:
-	kfree(bufname);
+err_expname:
+	kfree(dmabuf);
 err_module:
 	module_put(exp_info->owner);
 	return ERR_PTR(ret);
