@@ -105,7 +105,17 @@ zip() {
   rm CosmicStaff/AK/*.zip
   rm CosmicStaff/AK/Image
 }
+
+upload() {
+  cd output
+  wget htttps://temp.sh/up.sh
+  chmod +x up.sh
+  echo -e "${RED}"
+  ./up.sh Cos*
+  cd ../
+}
 add_deps
 setup_env
 compile
 zip
+upload
