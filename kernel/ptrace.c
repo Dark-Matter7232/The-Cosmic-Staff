@@ -30,6 +30,7 @@
 #include <linux/cn_proc.h>
 #include <linux/compat.h>
 #include <linux/sched/signal.h>
+#include <linux/task_integrity.h>
 
 /*
  * Access another process' address space via ptrace.
