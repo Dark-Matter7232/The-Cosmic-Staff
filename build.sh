@@ -70,8 +70,8 @@ function compile() {
   local IMAGE="$(pwd)/arch/arm64/boot/Image"
   make clean
   make mrproper
-  make -j$(nproc) M21_defconfig
-  make -j$(nproc) | tee $(date +"%H-%M")-log.txt
+  make -j$((`nproc`+1)) M21_defconfig
+  make -j$((`nproc`+1)) | tee $(date +"%H-%M")-log.txt
   SUCCESS=$?
   echo -e "${RST}"
 
