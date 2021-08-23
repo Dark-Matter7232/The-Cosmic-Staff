@@ -6,116 +6,147 @@ YELLOW='\033[1;33m'
 RED='\033[01;31m'
 RST='\033[0m'
 
+ORIGIN_DIR=$(pwd)
+# Toolchain options
+BUILD_PREF_COMPILER='clang'
+BUILD_PREF_COMPILER_VERSION='proton'
+# Local toolchain directory
+TOOLCHAIN=$(pwd)/build-shit/toolchain
+
+export_env_vars() {
+    export KBUILD_BUILD_USER=Dark-Matter7232
+    export KBUILD_BUILD_HOST=darkmachine
+    
+    export ARCH=arm64
+    export SUBARCH=arm64
+    export ANDROID_MAJOR_VERSION=r
+    export PLATFORM_VERSION=11.0.0
+    export $ARCH
+    
+    # CCACHE
+    export CCACHE="$(which ccache)"
+    export USE_CCACHE=1
+    export CCACHE_EXEC="build-shit/ccache"
+    ccache -M 4GB
+}
+
+script_echo() {
+    echo "  $1"
+}
+
+exit_script() {
+    kill -INT $$
+}
 
 add_deps() {
-  RED='\033[01;31m'
-  echo "Cloning dependencies if they don't exist...."
-  sudo apt-get install -y ccache cpio libarchive-tools 
-  if [ ! -d build-shit ]
-  then
-    mkdir build-shit
-  fi
-
-  if [ ! -d build-shit/clang ]
-  then
-    echo "Downloading proton-clang...."
-    cd build-shit;
-    wget https://github.com/kdrag0n/proton-clang/archive/refs/tags/20201212.tar.gz -O clang.tar.gz; 
-    bsdtar xf clang.tar.gz;
-    mv proton-clang-20201212 clang
-    cd ../
-  fi
-
-  if [ ! -d build-shit/gcc32 ]
-  then
-    echo "Downloading gcc32...."
-    git clone --depth=1 git://github.com/LineageOS/android_prebuilts_gcc_linux-x86_arm_arm-linux-androideabi-4.9 build-shit/gcc32
-  fi
-
-  if [ ! -d build-shit/gcc ]; then
-    echo "Downloading gcc...."
-    git clone --depth=1 https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9 build-shit/gcc
-  fi
-
-  if [ ! -d build-shit/ccache ]; then
-    echo "create folder for ccache...."
-    mkdir build-shit/ccache
-  fi   
-
-  echo "Done"
-}
-setup_env() {
-  # TC LOCAL PATH
-  echo -e "${CYAN}"
-  echo "Setting Up Environment"
-  echo ""
-  export ARCH=arm64
-  export SUBARCH=arm64
-  export ANDROID_MAJOR_VERSION=r
-  export PLATFORM_VERSION=11.0.0
-
-  # Export KBUILD flags
-  export KBUILD_BUILD_USER=Dark-Matter7232
-  export KBUILD_BUILD_HOST=darkmachine
-
-  # CCACHE
-  export CCACHE="$(which ccache)"
-  export USE_CCACHE=1
-  export CCACHE_EXEC="build-shit/ccache"
-  ccache -M 50G
-  echo "done"
-}
-function compile() {
-  read -p "Write the Kernel version: " KV
-  local IMAGE="$(pwd)/arch/arm64/boot/Image"
-  make clean
-  make mrproper
-  make -j$((`nproc`+1)) M21_defconfig
-  make -j$((`nproc`+1)) | tee $(date +"%H-%M")-log.txt
-  SUCCESS=$?
-  echo -e "${RST}"
-
-  if [ $SUCCESS -eq 0 ] && [ -f "$IMAGE" ]
-  then
-    echo -e "${GRN}"
-    echo "------------------------------------------------------------"
-    echo "Compilation successful..."
-    echo "Image can be found at arch/arm64/boot/Image"
-    echo  "------------------------------------------------------------"
-    echo -e "${RST}"
-  else
-    echo -e "${RED}"
-    echo "------------------------------------------------------------"
-    echo "Compilation failed..check build logs for errors"
-    echo "------------------------------------------------------------"
-    echo -e "${RST}"
-  fi
-
-}
-zip() {
-  echo -e "${GRN}"
-  rm -rf output/*
-  rm -rf CosmicStaff/AK/Image
-  rm -rf output/Cos*
-  cp -r arch/arm64/boot/Image CosmicStaff/AK/Image
-  cd CosmicStaff/AK
-  bash zip.sh
-  cd ../..
-  cp -r CosmicStaff/AK/1*.zip output/CosmicStaff-ONEUI-$KV-M21.zip
-  rm CosmicStaff/AK/*.zip
-  rm CosmicStaff/AK/Image
+    echo -e "${CYAN}"
+    if [ ! -d build-shit ]
+    then
+        script_echo "Create build-shit folder"
+        mkdir build-shit
+    fi
+    
+    if [ ! -d build-shit/ccache ]; then
+        script_echo "create folder for ccache...."
+        mkdir build-shit/ccache
+    fi
+    
+    if [ ! -d build-shit/toolchain ]
+    then
+        script_echo "Downloading proton-clang...."
+        script_echo $(wget -q --show-progress https://github.com/kdrag0n/proton-clang/archive/refs/tags/20201212.tar.gz -O clang.tar.gz);
+        bsdtar xf clang.tar.gz
+        rm -rf clang.tar.gz
+        mv proton-clang* build-shit/toolchain 
+    fi
+    verify_toolchain
 }
 
-upload() {
-  cd output
-  wget https://temp.sh/up.sh
-  chmod +x up.sh
-  echo -e "${RED}"
-  ./up.sh Cos*
-  cd ../
+verify_toolchain() {
+    sleep 2
+    script_echo " "
+    if [ ! -d build-shit ]
+    then
+        mkdir -p build-shit/ccache
+    fi
+    if [[ -d "${TOOLCHAIN}" ]]; then
+        script_echo "I: Toolchain found at default location"
+        export PATH="${TOOLCHAIN}/bin:$PATH"
+        export LD_LIBRARY_PATH="${TOOLCHAIN}/lib:$LD_LIBRARY_PATH"
+    else
+        script_echo "I: Toolchain not found at default location"
+        script_echo "   Downloading recommended toolchain at ${TOOLCHAIN}..."
+        add_deps
+    fi
+    
+    # Proton Clang 13
+    # export CLANG_TRIPLE=aarch64-linux-gnu-
+    export CROSS_COMPILE=aarch64-linux-gnu-
+    export CROSS_COMPILE_ARM32=arm-linux-gnueabi-
+    export CC=${BUILD_PREF_COMPILER}
 }
+
+build_kernel() {
+    sleep 3
+    script_echo " "
+    
+    if [[ ${BUILD_PREF_COMPILER_VERSION} == 'proton' ]]; then
+        make -C $(pwd) CC=${BUILD_PREF_COMPILER} AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip -j$((`nproc`+1)) M21_defconfig 2>&1 | sed 's/^/     /'
+        make -C $(pwd) CC=${BUILD_PREF_COMPILER} AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip -j$((`nproc`+1)) 2>&1 | sed 's/^/     /'
+    else
+        make -C $(pwd) CC=${BUILD_PREF_COMPILER} LLVM=1 ${BUILD_DEVICE_TMP_CONFIG} LOCALVERSION="${LOCALVERSION}" 2>&1 | sed 's/^/     /'
+        make -C $(pwd) CC=${BUILD_PREF_COMPILER} LLVM=1 -j$(nproc --all) LOCALVERSION="${LOCALVERSION}" 2>&1 | sed 's/^/     /'
+    fi
+}
+
+build_image() {
+    if [[ -e "$(pwd)/arch/arm64/boot/Image" ]]; then
+        script_echo " "
+        read -p "Write the Kernel version: " KV
+        script_echo "I: Building kernel image..."
+        echo -e "${GRN}"
+        rm -rf output/*
+        rm -rf CosmicStaff/AK/Image
+        rm -rf output/Cos*
+        cp -r arch/arm64/boot/Image CosmicStaff/AK/Image
+        cd CosmicStaff/AK
+        bash zip.sh
+        cd ../..
+        cp -r CosmicStaff/AK/1*.zip output/CosmicStaff-ONEUI-$KV-M21.zip
+        cd output
+        wget -q https://temp.sh/up.sh 
+        chmod +x up.sh
+        echo -e "${RED}"
+        ./up.sh Cos* 2>&1 | sed 's/^/     /'
+        cd ../
+        if [[ ! -f ${ORIGIN_DIR}/CosmicStaff/AK/Image ]]; then
+            echo -e "${RED}"
+            script_echo " "
+            script_echo "E: Kernel image not built successfully!"
+            script_echo "   Errors can be fround from above."
+            sleep 3
+            exit_script
+        else
+            rm -f $(pwd)/arch/arm64/boot/Image
+            rm -f $(pwd)/CosmicStaff/AK/Image
+            rm CosmicStaff/AK/*.zip
+        fi
+        
+    else
+        echo -e "${RED}"
+        script_echo "E: Image not built!"
+        script_echo "   Errors can be fround from above."
+        sleep 3
+        exit_script
+    fi
+}
+
+export_env_vars
 add_deps
-setup_env
-compile
-zip
-upload
+build_kernel
+build_image
+
+# Build variables - DO NOT CHANGE
+VERSION=$(grep -m 1 VERSION "$(pwd)/Makefile" | sed 's/^.*= //g')
+PATCHLEVEL=$(grep -m 1 PATCHLEVEL "$(pwd)/Makefile" | sed 's/^.*= //g')
+SUBLEVEL=$(grep -m 1 SUBLEVEL "$(pwd)/Makefile" | sed 's/^.*= //g')
