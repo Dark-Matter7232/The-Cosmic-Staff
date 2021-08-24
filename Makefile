@@ -708,6 +708,10 @@ LDFLAGS		+= -plugin LLVMgold.so
 LLVM_AR		:= llvm-ar
 LLVM_NM		:= llvm-nm
 export LLVM_AR LLVM_NM
+# Set O3 optimization level for LTO with most linkers
+LDFLAGS		+= -O3
+LDFLAGS		+= --plugin-opt=O3
+LDFLAGS		+= --plugin-opt=-import-instr-limit=20
 else ifdef CONFIG_LTO_GCC
 LDFLAGS_FINAL_vmlinux := -flto=jobserver -fuse-linker-plugin
 LDFLAGS_FINAL_vmlinux += $(filter -g%, $(KBUILD_CFLAGS))
@@ -753,6 +757,10 @@ else ifdef CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE_O3
 KBUILD_CFLAGS += -O3
 else ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
 KBUILD_CFLAGS += -Os
+endif
+
+ifdef CONFIG_LTO_CLANG
+KBUILD_CFLAG	+= -fwhole-program-vtables
 endif
 
 ifeq ($(cc-name),clang)
@@ -914,7 +922,9 @@ endif
 ifdef CONFIG_LTO_CLANG
 ifdef CONFIG_THINLTO
 lto-clang-flags	:= -flto=thin
+ifdef CONFIG_LD_LLD
 LDFLAGS		+= --thinlto-cache-dir=.thinlto-cache
+endif
 else
 lto-clang-flags	:= -flto
 endif
