@@ -26,8 +26,7 @@ export_env_vars() {
     # CCACHE
     export CCACHE="$(which ccache)"
     export USE_CCACHE=1
-    export CCACHE_EXEC="build-shit/ccache"
-    ccache -M 4GB
+    ccache -M 5GB
     export CROSS_COMPILE=aarch64-linux-gnu-
     export CROSS_COMPILE_ARM32=arm-linux-gnueabi-
     export CC=${BUILD_PREF_COMPILER}
@@ -47,18 +46,21 @@ add_deps() {
         mkdir $(pwd)/build-shit
     fi
     
-    if [ ! -d $(pwd)/build-shit/ccache ]; then
-        script_echo "create folder for ccache...."
-        mkdir $(pwd)/build-shit/ccache
-    fi
-    
     if [ ! -d $(pwd)/build-shit/toolchain ]
     then
         script_echo "Downloading proton-clang...."
-        script_echo $(wget -q --show-progress https://github.com/kdrag0n/proton-clang/archive/refs/tags/20201212.tar.gz -O clang.tar.gz);
-        bsdtar xf clang.tar.gz
-        rm -rf clang.tar.gz
-        mv proton-clang* build-shit/toolchain
+        git clone https://github.com/TenSeventy7/exynos9610_toolchains_fresh.git ${TOOLCHAIN} --single-branch -b ${BUILD_PREF_COMPILER_VERSION} --depth 1 2>&1 | sed 's/^/     /'
+        sudo mkdir -p /root/build/install/aarch64-linux-gnu
+		sudo cp -r "${TOOLCHAIN}/lib" /root/build/install/aarch64-linux-gnu/
+		sudo chown gitpod /root
+		sudo chown gitpod /root/build
+		sudo chown gitpod /root/build/install
+		sudo chown gitpod /root/build/install/aarch64-linux-gnu
+		sudo chown gitpod /root/build/install/aarch64-linux-gnu/lib
+        # script_echo $(wget -q --show-progress https://github.com/kdrag0n/proton-clang/archive/refs/tags/20201212.tar.gz -O clang.tar.gz);
+        # bsdtar xf clang.tar.gz
+        # rm -rf clang.tar.gz
+        # mv proton-clang* build-shit/toolchain
     fi
     verify_toolchain_install
 }
