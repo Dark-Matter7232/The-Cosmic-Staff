@@ -489,3 +489,7 @@ obj-$(CONFIG_SND_SOC_TAS2562)	+= tas2562/
 
 # DBMDx
 obj-$(CONFIG_SND_SOC_DBMDX)	+= dbmdx/
+
+CFLAGS_rt5665.o := $(DISABLE_LTO)
+CFLAGS_snd-soc-rt5665.o := $(DISABLE_LTO)
+KBUILD_CFLAGS   += -Os
