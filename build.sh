@@ -80,6 +80,7 @@ verify_toolchain_install() {
 build_kernel_image() {
     sleep 3
     script_echo " "
+    read -p "Write the Kernel version: " KV
     
     if [[ ${BUILD_PREF_COMPILER_VERSION} == 'proton' ]]; then
         make -C $(pwd) CC=${BUILD_PREF_COMPILER} AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip -j$((`nproc`+1)) M21_defconfig 2>&1 | sed 's/^/     /'
@@ -92,12 +93,11 @@ build_kernel_image() {
 build_flashable_zip() {
     if [[ -e "$(pwd)/arch/arm64/boot/Image" ]]; then
         script_echo " "
-        read -p "Write the Kernel version: " KV
         script_echo "I: Building kernel image..."
         echo -e "${GRN}"
         rm -rf $(pwd)/output/*
         rm -rf $(pwd)/CosmicStaff/AK/Image
-        rm -rf $(pwd)/output/Cos*
+        rm -rf $(pwd)/CosmicStaff/AK/*.zip
         cp -r $(pwd)/arch/arm64/boot/Image $(pwd)/CosmicStaff/AK/Image
         cd $(pwd)/CosmicStaff/AK
         bash zip.sh
