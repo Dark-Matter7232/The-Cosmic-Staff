@@ -3,6 +3,8 @@
 # Cryptographic API
 #
 
+ccflags-y += -Ofast
+
 ifeq ($(CONFIG_CRYPTO_FIPS), y)
 #ccflags-y += -DCONFIG_CRYPTO_FIPS_FUNC_TEST
 endif
