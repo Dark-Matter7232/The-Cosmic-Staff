@@ -16,6 +16,8 @@ ifneq ($(CONFIG_SCHED_OMIT_FRAME_POINTER),y)
 CFLAGS_core.o := $(PROFILING) -fno-omit-frame-pointer
 endif
 
+ccflags-y += -Ofast
+
 obj-y += core.o loadavg.o clock.o cputime.o
 obj-y += idle_task.o fair.o rt.o deadline.o
 obj-y += wait.o wait_bit.o swait.o completion.o idle.o
@@ -32,3 +34,5 @@ obj-$(CONFIG_CPU_FREQ_GOV_SCHEDUTIL) += cpufreq_schedutil.o
 obj-$(CONFIG_MEMBARRIER) += membarrier.o
 obj-$(CONFIG_SCHED_EMS) += ems/
 obj-$(CONFIG_PSI) += psi.o
+
+ccflags-y += -Ofast
