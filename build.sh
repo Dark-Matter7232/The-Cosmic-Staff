@@ -51,16 +51,12 @@ add_deps() {
         script_echo "Downloading proton-clang...."
         git clone https://github.com/TenSeventy7/exynos9610_toolchains_fresh.git ${TOOLCHAIN} --single-branch -b ${BUILD_PREF_COMPILER_VERSION} --depth 1 2>&1 | sed 's/^/     /'
         sudo mkdir -p /root/build/install/aarch64-linux-gnu
-		sudo cp -r "${TOOLCHAIN}/lib" /root/build/install/aarch64-linux-gnu/
-		sudo chown gitpod /root
-		sudo chown gitpod /root/build
-		sudo chown gitpod /root/build/install
-		sudo chown gitpod /root/build/install/aarch64-linux-gnu
-		sudo chown gitpod /root/build/install/aarch64-linux-gnu/lib
-        # script_echo $(wget -q --show-progress https://github.com/kdrag0n/proton-clang/archive/refs/tags/20201212.tar.gz -O clang.tar.gz);
-        # bsdtar xf clang.tar.gz
-        # rm -rf clang.tar.gz
-        # mv proton-clang* build-shit/toolchain
+        sudo cp -r "${TOOLCHAIN}/lib" /root/build/install/aarch64-linux-gnu/
+        sudo chown $(whoami) /root
+        sudo chown $(whoami) /root/build
+        sudo chown $(whoami) /root/build/install
+        sudo chown $(whoami) /root/build/install/aarch64-linux-gnu
+        sudo chown $(whoami) /root/build/install/aarch64-linux-gnu/lib
     fi
     verify_toolchain_install
 }
@@ -80,14 +76,19 @@ verify_toolchain_install() {
 build_kernel_image() {
     sleep 3
     script_echo " "
+    read -p "Enter Device name: " DEVICE
     read -p "Write the Kernel version: " KV
     
-    if [[ ${BUILD_PREF_COMPILER_VERSION} == 'proton' ]]; then
+    if [[ ${DEVICE} == 'M21' ]]; then
+        script_echo 'Building CosmicStaff Kernel For M21'
+        sleep 3
         make -C $(pwd) CC=${BUILD_PREF_COMPILER} AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip -j$((`nproc`+1)) M21_defconfig 2>&1 | sed 's/^/     /'
         make -C $(pwd) CC=${BUILD_PREF_COMPILER} AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip -j$((`nproc`+1)) 2>&1 | sed 's/^/     /'
     else
-        make -C $(pwd) CC=${BUILD_PREF_COMPILER} LLVM=1 ${BUILD_DEVICE_TMP_CONFIG} LOCALVERSION="${LOCALVERSION}" 2>&1 | sed 's/^/     /'
-        make -C $(pwd) CC=${BUILD_PREF_COMPILER} LLVM=1 -j$(nproc --all) LOCALVERSION="${LOCALVERSION}" 2>&1 | sed 's/^/     /'
+        script_echo 'Building CosmicStaff Kernel For M31'
+        sleep 3
+        make -C $(pwd) CC=${BUILD_PREF_COMPILER} AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip -j$((`nproc`+1)) M31_defconfig 2>&1 | sed 's/^/     /'
+        make -C $(pwd) CC=${BUILD_PREF_COMPILER} AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip -j$((`nproc`+1)) 2>&1 | sed 's/^/     /'
     fi
 }
 build_flashable_zip() {
@@ -102,13 +103,23 @@ build_flashable_zip() {
         cd $(pwd)/CosmicStaff/AK
         bash zip.sh
         cd ../..
-        cp -r $(pwd)/CosmicStaff/AK/1*.zip $(pwd)/output/CosmicStaff-ONEUI-$KV-M21.zip
-        cd $(pwd)/output
-        wget -q https://temp.sh/up.sh
-        chmod +x up.sh
-        echo -e "${RED}"
-        ./up.sh Cos* 2>&1 | sed 's/^/     /'
-        cd ../
+        if [[ ${DEVICE} == 'M21' ]]; then
+            cp -r $(pwd)/CosmicStaff/AK/1*.zip $(pwd)/output/CosmicStaff-ONEUI-$KV-M21.zip
+            cd $(pwd)/output
+            wget -q https://temp.sh/up.sh
+            chmod +x up.sh
+            echo -e "${RED}"
+            ./up.sh Cos* 2>&1 | sed 's/^/     /'
+            cd ../
+        else
+            cp -r $(pwd)/CosmicStaff/AK/1*.zip $(pwd)/output/CosmicStaff-ONEUI-$KV-M31.zip
+            cd $(pwd)/output
+            wget -q https://temp.sh/up.sh
+            chmod +x up.sh
+            echo -e "${RED}"
+            ./up.sh Cos* 2>&1 | sed 's/^/     /'
+            cd ../
+        fi
         if [[ ! -f ${ORIGIN_DIR}/CosmicStaff/AK/Image ]]; then
             echo -e "${RED}"
             script_echo " "
@@ -119,7 +130,7 @@ build_flashable_zip() {
         else
             rm -f $(pwd)/arch/arm64/boot/Image
             rm -f $(pwd)/CosmicStaff/AK/{Image, *.zip}
-            rm -f $(pwd)/output/up.sh
+            rm -f $(pwd)/output/*
         fi
         
     else
