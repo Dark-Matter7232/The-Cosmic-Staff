@@ -356,25 +356,16 @@ static int __init devfreq_boost_init(void)
 		}
 	}
 
-	devfreq_boost_input_handler.private = d;
-	ret = input_register_handler(&devfreq_boost_input_handler);
-	if (ret) {
-		pr_err("Failed to register input handler, err: %d\n", ret);
-		goto stop_kthreads;
-	}
-
 	d->fb_notif.notifier_call = fb_notifier_cb;
 	d->fb_notif.priority = INT_MAX;
 	ret = fb_register_client(&d->fb_notif);
 	if (ret) {
 		pr_err("Failed to register fb notifier, err: %d\n", ret);
-		goto unregister_handler;
+		goto stop_kthreads;
 	}
 
 	return 0;
 
-unregister_handler:
-	input_unregister_handler(&devfreq_boost_input_handler);
 stop_kthreads:
 	while (i--)
 		kthread_stop(thread[i]);
